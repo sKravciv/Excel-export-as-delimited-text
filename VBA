@@ -1,0 +1,22 @@
+Public Sub Workbook_Open()
+Dim sht As Worksheet
+Dim LastRow As Long
+Dim LastColumn As Long
+Dim rng As Range
+Workbooks("template.xls").Activate
+Set sht = Workbooks("template").Worksheets("vrstva")
+LastColumn = sht.Cells(1, sht.Columns.Count).End(xlToLeft).Column
+LastRow = sht.Range("A1").CurrentRegion.Rows.Count
+x = Cells(1, LastColumn).Address(False, False)
+Cells(1, LastColumn + 1).Select
+ActiveCell.Formula = "=TEXTJOIN("","",TRUE,A1:" & x & ")"
+Set rng = Range(Cells(1, LastColumn + 1), Cells(LastRow, LastColumn + 1))
+rng.Select
+Selection.FillDown
+Selection.Copy
+Workbooks("template").Sheets.Add
+Range("A1").Select
+Range("A1").PasteSpecial xlPasteValues
+ActiveWorkbook.SaveAs Filename:=Application.ActiveWorkbook.Path & "\export_vrstvy.txt", _
+FileFormat:=xlUnicodeText, CreateBackup:=False
+End Sub
